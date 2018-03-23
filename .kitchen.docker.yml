@@ -1,0 +1,41 @@
+---
+driver:
+  name: docker
+  provision: true
+
+provisioner:
+  name: ansible_playbook
+  hosts: localhost
+  roles_path: /etc/ansible/roles/
+  require_ansible_repo: false
+  require_ansible_omnibus: false
+  require_ansible_source: false
+  require_pip: true
+  ansible_version: 2.4.3.0
+  http_proxy: <%= ENV['HTTP_PROXY'] %>
+  https_proxy: <%= ENV['HTTPS_PROXY'] %>
+  no_proxy: localhost,127.0.0.1
+  ignore_extensions_from_root: [".git",".idea",".kitchen.yml"]
+  ignore_paths_from_root: [".git",".idea",".kitchen"]
+
+transport:
+  max_ssh_sessions: 6
+
+platforms:
+- name: centos-7
+  driver_config:
+    privileged: true
+    image: centos:latest
+    platform: centos
+    forward: 8084:4568
+    use_sudo: false
+    provision_command:
+      - yum clean all
+
+suites:
+  - name: tomcat
+    provisioner:
+      idempotency_test: false
+      playbook: /tests/test.yml
+    run_list:
+    attributes:

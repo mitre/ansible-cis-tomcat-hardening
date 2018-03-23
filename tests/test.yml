@@ -1,0 +1,28 @@
+---
+# First, download a sample .war on the management node
+- hosts: localhost
+  gather_facts: false
+  pre_tasks:
+    - name: Download Sample .war from Tomcat project
+      get_url:
+        url: https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+        dest: ./sample.war
+
+- hosts: localhost
+  become: true
+  pre_tasks:
+  vars:
+    tomcat_install_admin_webapp: true
+    tomcat_port: 8084
+    tomcat_users:
+      - name: admin
+        password: adminadmin
+        roles:
+          - manager-gui
+    tomcat_deploy_wars:
+      - sample.war
+  roles:
+    - ansible-cis-tomcat-hardening
+  post_tasks:
+    - debug:
+        msg: "Playbook executed. Point your browser to http://127.0.0.1:4568/sample/ to view the installed web application"

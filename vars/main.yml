@@ -1,0 +1,18 @@
+# roles/tomcat/vars/main.yml
+---
+
+tomcat_packages:
+  - tomcat
+
+tomcat_admin_packages:
+  - tomcat-admin-webapps
+
+tomcat_service: tomcat
+tomcat_user: tomcat
+
+# Directories
+tomcat_home_dir: /usr/share/tomcat
+tomcat_lib_dir: /usr/share/java/tomcat
+tomcat_app_dir: /var/lib/tomcat/webapps
+
+

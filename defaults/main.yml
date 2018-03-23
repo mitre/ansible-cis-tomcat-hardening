@@ -1,0 +1,31 @@
+# roles/tomcat/defaults/main.yml
+---
+
+# Port for the Tomcat service
+tomcat_port: 8080
+
+# List of libraries (jar files) to install in Tomcat lib/ directory
+tomcat_libraries: []
+
+# List of application WARs to deploy on the Tomcat server
+tomcat_deploy_wars: []
+
+# Administration webapp
+
+tomcat_install_admin_webapp: false
+
+# Roles
+tomcat_roles:
+  - manager-gui
+  - manager-status
+  - manager-script
+  - manager-jmx
+
+# Tomcat users
+# List of structs of the form:
+# - name: USERNAME
+#   password: PASSWORD
+#   roles:
+#     - ROLE1
+#     - ROLE2
+tomcat_users: []

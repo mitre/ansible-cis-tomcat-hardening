@@ -1,0 +1,7 @@
+# roles/tomcat/handlers/main.yml
+---
+
+- name: restart tomcat
+  service:
+    name: "{{ tomcat_service }}"
+    state: restarted

@@ -1,0 +1,21 @@
+# roles/tomcat/tasks/manager.yml
+---
+
+- name: Install the administration web interface
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ tomcat_admin_packages }}"
+  notify: restart tomcat
+  tags: tomcat
+
+- name: Configure users and roles
+  template:
+    src: etc_tomcat_tomcat-users.xml.j2
+    dest: /etc/tomcat/tomcat-users.xml
+    mode: '0660'
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+  notify: restart tomcat
+  tags: tomcat
+

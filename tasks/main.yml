@@ -1,0 +1,42 @@
+# roles/tomcat/tasks/main.yml
+---
+
+- include_tasks: install.yml
+
+- name: Install libraries
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tomcat_lib_dir }}"
+  with_items: "{{ tomcat_libraries }}"
+  tags: tomcat
+
+- name: Install configuration file `server.xml`
+  template:
+    src: etc_tomcat_server.xml.j2
+    dest: /etc/tomcat/server.xml
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    mode: '0664'
+  notify: restart tomcat
+  tags: tomcat
+
+- name: Ensure service is started
+  service:
+    name: "{{ tomcat_service }}"
+    state: started
+    enabled: true
+  tags: tomcat
+
+- name: Deploy applications
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tomcat_app_dir }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    mode: '0640'
+  with_items: "{{ tomcat_deploy_wars }}"
+  tags: tomcat
+
+- include_tasks: manager.yml
+  when: tomcat_install_admin_webapp
+

@@ -1,0 +1,10 @@
+# roles/tomcat/tasks/install_redhat.yml
+---
+
+- name: Install packages
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ tomcat_packages }}"
+  tags: tomcat
+
