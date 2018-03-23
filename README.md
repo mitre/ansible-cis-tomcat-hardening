@@ -8,6 +8,14 @@ An Ansible role for setting up and hardening Tomcat on RHEL/CentOS 7 or Fedora. 
 
 The firewall configuration is not a concern of this role. Use another role for that (e.g. [bertvv.rh-base](https://galaxy.ansible.com/bertvv/rh-base))
 
+## How to run
+
+1. `bundle install`
+2. Set your kitchen environment variable to `.kitchen.docker.yml` or `.kitchen.vagrant.yml` based on preference
+  - Example: `export KITCHEN_YAML=.kitchen.vagrant.yml`
+3. Run `kitchen converge tomcat`
+4. Cleanup after with `kitchen destroy tomcat`
+
 ## Requirements
 
 No specific requirements
