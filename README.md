@@ -14,7 +14,8 @@ The firewall configuration is not a concern of this role. Use another role for t
 2. Set your kitchen environment variable to `.kitchen.docker.yml` or `.kitchen.vagrant.yml` based on preference
   - Example: `export KITCHEN_YAML=.kitchen.vagrant.yml`
 3. Run `kitchen converge tomcat`
-4. Cleanup after with `kitchen destroy tomcat`
+4. Navigate to http://127.0.0.1:4568
+5. Cleanup after with `kitchen destroy tomcat`
 
 ## Requirements
 
