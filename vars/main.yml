@@ -3,7 +3,7 @@
 
 tomcat_packages:
   - unzip
-  - tomcat
+  - java-1.7.0-openjdk-devel
 
 tomcat_admin_packages:
   - tomcat-admin-webapps
