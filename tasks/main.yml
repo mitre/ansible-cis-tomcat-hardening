@@ -1,31 +1,31 @@
-# roles/tomcat/tasks/main.yml
+#roles/tomcat/tasks/main.yml
 ---
 
-# - include_tasks: install.yml
-#
-# - name: Install libraries
-#   copy:
-#     src: "{{ item }}"
-#     dest: "{{ tomcat_lib_dir }}"
-#   with_items: "{{ tomcat_libraries }}"
-#   tags: tomcat
-#
-# - name: Add tomcat group
-#   group:
-#     name: tomcat
-#     state: present
-#
-# - name: Add tomcat user
-#   user:
-#     name: tomcat
-#     comment: tomcat user
-#     group: tomcat
-#     shell: /bin/nologin
-#     home: "{{ tomcat_home_dir }}"
-#
+- include_tasks: install.yml
+
+- name: Install libraries
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tomcat_lib_dir }}"
+  with_items: "{{ tomcat_libraries }}"
+  tags: tomcat
+
+- name: Add tomcat group
+  group:
+    name: "{{ tomcat_group }}"
+    state: present
+
+- name: Add tomcat user
+  user:
+    name: tomcat_admin
+    comment: tomcat user
+    group: "{{ tomcat_group }}"
+    shell: /bin/nologin
+    home: "{{ tomcat_home_dir }}"
+
 - name: Download Tomcat 8 binary
   get_url:
-    url: http://mirrors.koehn.com/apache/tomcat/tomcat-8/v8.5.31/bin/apache-tomcat-8.5.31.tar.gz
+    url: http://apache.osuosl.org/tomcat/tomcat-8/v8.5.31/bin/apache-tomcat-8.5.31.tar.gz
     dest: "{{ tomcat_home_dir }}"
 
 - name: Extract tomcat 8 binary
@@ -37,44 +37,53 @@
 - name: Give tomcat user ownership
   file:
     path: /usr/share/tomcat
-    owner: tomcat
-    group: tomcat
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
     recurse: yes
-    mode: 0777
+    mode: 0750
 
 - name: Install systemd file
   template:
     src: ./templates/tomcat.service.j2
     dest: "/etc/systemd/system/tomcat.service"
-    owner: tomcat
-    group: tomcat
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
 
-# - name: Install configuration file `server.xml`
-#   template:
-#     src: etc_tomcat_server.xml.j2
-#     dest: /etc/tomcat/server.xml
-#     owner: "{{ tomcat_user }}"
-#     group: "{{ tomcat_user }}"
-#     mode: '0664'
-#   notify: restart tomcat
-#   tags: tomcat
-#
-# - name: Ensure service is started
-#   service:
-#     name: "{{ tomcat_service }}"
-#     state: started
-#     enabled: true
-#   tags: tomcat
-#
-# - name: Deploy applications
-#   copy:
-#     src: "{{ item }}"
-#     dest: "{{ tomcat_app_dir }}"
-#     owner: "{{ tomcat_user }}"
-#     group: "{{ tomcat_user }}"
-#     mode: '0640'
-#   with_items: "{{ tomcat_deploy_wars }}"
-#   tags: tomcat
-#
+- name: Start tomcat and reload config files
+  systemd:
+    state: started
+    daemon_reload: yes
+    name: "{{ tomcat_service }}"
+    enabled: True
+
+- name: Install configuration file `server.xml`
+  template:
+    src: etc_tomcat_server.xml.j2
+    dest: "{{tomcat_home_dir}}/conf/server.xml"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: '0750'
+  notify: restart tomcat
+  tags: tomcat
+
+- name: Ensure service is started
+  service:
+    name: "{{ tomcat_service }}"
+    state: started
+    enabled: true
+  tags: tomcat
+
+- name: Deploy applications
+  copy:
+    src: "{{ item }}"
+    dest: "{{ tomcat_home_dir }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: '0750'
+  with_items: "{{ tomcat_deploy_wars }}"
+  tags: tomcat
+
+- include_tasks: harden.yml
+
 # - include_tasks: manager.yml
 #   when: tomcat_install_admin_webapp

@@ -1,0 +1,66 @@
+# roles/tomcat/tasks/harden.yml
+---
+
+  - name: Remove default applications
+    file:
+      state: absent
+      path: "{{ item }}"
+    with_items:
+      - "{{ tomcat_home_dir }}/webapps/examples"
+      - "{{ tomcat_home_dir }}/webapps/manager"
+      - "{{ tomcat_home_dir }}/webapps/host-manager"
+      - "{{ tomcat_home_dir }}/webapps/docs"
+      - "{{ tomcat_home_dir }}/webapps/ROOT"
+
+  - name: Set permissions on logs directory
+    file:
+      path: "{{ tomcat_home_dir }}/logs"
+      owner: "{{ tomcat_user }}"
+      group: "{{ tomcat_group }}"
+      recurse: yes
+      mode: '0770'
+
+  - name: Set permissions on temp directory
+    file:
+      path: "{{ tomcat_home_dir }}/temp"
+      owner: "{{ tomcat_user }}"
+      group: "{{ tomcat_group }}"
+      recurse: yes
+      mode: '0770'
+
+  - name: Set permissions on catalina.policy
+    file:
+      path: "{{ tomcat_home_dir }}/conf/catalina.policy"
+      owner: "{{ tomcat_user }}"
+      group: "{{ tomcat_group }}"
+      mode: '0770'
+
+  - name: Deploy web.xml
+    template:
+      src: web.xml.j2
+      dest: "{{tomcat_home_dir}}/conf/web.xml"
+      owner: "{{ tomcat_user }}"
+      group: "{{ tomcat_group }}"
+      mode: '0750'
+    notify: restart tomcat
+    tags: tomcat
+
+  - name: Deploy catalina.properties
+    template:
+      src: catalina.properties.j2
+      dest: "{{tomcat_home_dir}}/conf/catalina.properties"
+      owner: "{{ tomcat_user }}"
+      group: "{{ tomcat_group }}"
+      mode: '0750'
+    notify: restart tomcat
+    tags: tomcat
+
+  - name: Deploy logging.properties
+    template:
+      src: logging.properties.j2
+      dest: "{{tomcat_home_dir}}/conf/logging.properties"
+      owner: "{{ tomcat_user }}"
+      group: "{{ tomcat_group }}"
+      mode: '0750'
+    notify: restart tomcat
+    tags: tomcat

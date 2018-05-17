@@ -19,7 +19,7 @@
      define subcomponents such as "Valves" at this level.
      Documentation at /docs/config/server.html
  -->
-<Server port="8005" shutdown="SHUTDOWN">
+<Server port="-1" shutdown="wofjvnasl">
   <!-- Security listener. Documentation at /docs/config/listeners.html
   <Listener className="org.apache.catalina.security.SecurityListener" />
   -->
@@ -29,6 +29,9 @@
   <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
   <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
   <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+  <Listener className="org.apache.catalina.security.SecurityListener" checkedOsUsers="root"
+            minimumUmask="0007" />
+
 
   <!-- Global JNDI resources
        Documentation at /docs/jndi-resources-howto.html
@@ -65,9 +68,10 @@
          APR (HTTP/AJP) Connector: /docs/apr.html
          Define a non-SSL HTTP/1.1 Connector on port 8080
     -->
-    <Connector port="{{ tomcat_port }}" protocol="HTTP/1.1"
-               connectionTimeout="20000"
-               redirectPort="8443" />
+    <Connector server="connector1" port="{{ tomcat_port }}" protocol="HTTP/1.1"
+               connectionTimeout="60000"
+               redirectPort="8443"
+               xpoweredBy="false" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
@@ -87,7 +91,9 @@
     -->
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
-    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
+    <Connector server="connector2" port="8009" protocol="AJP/1.3" redirectPort="8443"
+                xpoweredBy="false" SSLEnabled="true" sslProtocol="TLS" secure="true"
+                scheme="https" clientAuth="true" />
 
 
     <!-- An Engine represents the entry point (within Catalina) that processes
@@ -115,12 +121,15 @@
              resources under the key "UserDatabase".  Any edits
              that are performed against this UserDatabase are immediately
              available for use by the Realm.  -->
+        <!--
         <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
                resourceName="UserDatabase"/>
+        -->
       </Realm>
 
       <Host name="localhost"  appBase="webapps"
-            unpackWARs="true" autoDeploy="true">
+            unpackWARs="true" autoDeploy="false"
+            deployOnStartup="false" >
 
         <!-- SingleSignOn valve, share authentication between web applications
              Documentation at: /docs/config/valve.html -->
@@ -134,6 +143,9 @@
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
                prefix="localhost_access_log." suffix=".txt"
                pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+
+        <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127.0.0.1"
+          />
 
       </Host>
     </Engine>

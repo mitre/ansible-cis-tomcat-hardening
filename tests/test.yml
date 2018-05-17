@@ -25,4 +25,4 @@
     - ansible-cis-tomcat-hardening
   post_tasks:
     - debug:
-        msg: "Playbook executed. Point your browser to http://127.0.0.1:4568/sample/ to view the installed web application"
+        msg: "Playbook executed. Point your browser to http://127.0.0.1:4568/ to view"

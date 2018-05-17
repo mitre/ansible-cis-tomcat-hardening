@@ -13,11 +13,11 @@ Environment=CATALINA_BASE={{tomcat_home_dir}}
 Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
 Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
 
-ExecStart={{tomcat_home_dir}}/bin/startup.sh
+ExecStart={{tomcat_home_dir}}/bin/startup.sh -security
 ExecStop=/bin/kill -15 $MAINPID
 
-User=tomcat
-Group=tomcat
+User={{ tomcat_user }}
+Group={{ tomcat_group }}
 UMask=0007
 RestartSec=10
 Restart=always

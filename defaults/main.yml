@@ -2,7 +2,7 @@
 ---
 
 # Port for the Tomcat service
-tomcat_port: 8080
+tomcat_port: 8084
 
 # List of libraries (jar files) to install in Tomcat lib/ directory
 tomcat_libraries: []
