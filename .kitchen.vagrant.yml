@@ -29,8 +29,9 @@ verifier:
     - git: https://github.com/aaronlippold/cis_apache_tomcat_benchmark_8.git
       branch: master
   attrs:
+    # Point to your attributes.yml file here ex: - /path/to/attributes.yml
   format: json
-  output: ./%{platform}_%{suite}_results15.json
+  output: ./%{platform}_%{suite}_results.json
 
 platforms:
 - name: centos-7
