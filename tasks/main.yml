@@ -25,12 +25,12 @@
 
 - name: Download Tomcat 8 binary
   get_url:
-    url: http://apache.osuosl.org/tomcat/tomcat-8/v8.5.31/bin/apache-tomcat-8.5.31.tar.gz
+    url: http://apache.osuosl.org/tomcat/tomcat-8/v8.5.42/bin/apache-tomcat-8.5.42-deployer.tar.gz
     dest: "{{ tomcat_home_dir }}"
 
 - name: Extract tomcat 8 binary
   unarchive:
-    src: "{{ tomcat_home_dir }}/apache-tomcat-8.5.31.tar.gz"
+    src: "{{ tomcat_home_dir }}/apache-tomcat-8.5.42.tar.gz"
     dest: "{{ tomcat_home_dir }}"
     extra_opts: "--strip-components=1"
 
