@@ -30,7 +30,7 @@
 
 - name: Extract tomcat 8 binary
   unarchive:
-    src: "{{ tomcat_home_dir }}/apache-tomcat-8.5.31.tar.gz"
+    src: "{{ tomcat_home_dir }}/apache-tomcat-8.5.42.tar.gz"
     dest: "{{ tomcat_home_dir }}"
     extra_opts: "--strip-components=1"
 
